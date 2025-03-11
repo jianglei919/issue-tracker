@@ -1,13 +1,9 @@
 const express = require('express');
+require("dotenv").config({path: "api.env"});
 const { ApolloServer } = require('apollo-server-express');
+const {GraphQLScalarType} = require('graphql');
 const {connectToDb, getDbIssues, insertDBIssue} = require('./db.js');
 const app = express();
-app.use(express.static('public'));
-app.listen(3000, function () {
-    console.log('App started on port 3000');
-});
-
-app.get("/", (req, res) => { res.sendFile(Path.resolve(__dirname, "index.html")) });
 
 const mySchema = `
     scalar GraphQLDate
@@ -48,19 +44,10 @@ const mySchema = `
 let msg = 'Issue Tracker API v1.0';
 const resolvers = {
     Query: {
-        // about: () => 'Issue Tracker API v1.0',
-        // issueList: () => {
-        //     return issues;
-        // },
         about: getaboutMessage,
         issueList: getIssues,
     },
     Mutation: {
-        // setAboutMessage: (_, {message}) => {
-        //     aboutMessage = message;
-        //     return aboutMessage;
-        // },
-
         setAboutMessage,
         addIssue,
     },
@@ -90,11 +77,15 @@ const server = new ApolloServer({
     resolvers,
 });
 
-server.start().then(() => {
-    server.applyMiddleware({ app, path: '/graphql' });
-    // app.listen(4000, function () {
-    //     console.log('App started on port 4000');
-    // });
-    
+const enableCors = (process.env.ENABLE_CORS || 'true') == 'true';
+console.log('CORS setting:', enableCors);
+
+const port = process.env.API_PORT;
+
+server.start().then((res) => {
+    server.applyMiddleware({ app, path: '/graphql', cors: enableCors });
     connectToDb();
+    app.listen(port, function () {
+        console.log(`App started on port ${port}`);
+    });
 });

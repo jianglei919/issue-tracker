@@ -4,8 +4,6 @@
   "main": "main.js",
   "scripts": {
     "start": "nodemon main.js",
-    "compile": "babel jsx --presets @babel/react --out-dir public",
-    "watch": "babel jsx --presets @babel/react --out-dir public --watch --verbose",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Lei Jiang",
@@ -14,15 +12,11 @@
   "dependencies": {
     "apollo-server": "^3.13.0",
     "apollo-server-express": "^3.13.0",
+    "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "graphql": "^16.10.0",
     "graphql-tools": "^9.0.11",
     "mongodb": "^6.13.0",
     "nodemon": "^3.1.9"
-  },
-  "devDependencies": {
-    "@babel/cli": "^7.26.4",
-    "@babel/core": "^7.26.0",
-    "@babel/preset-react": "^7.26.3"
   }
 }

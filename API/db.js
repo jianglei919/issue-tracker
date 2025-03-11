@@ -1,5 +1,5 @@
 const { MongoClient } = require('mongodb');
-const dbUrl = 'mongodb+srv://<password>@cluster0.3vvnl.mongodb.net/IssueTracker';
+const dbUrl = process.env.DB_URL;
 
 let db;
 async function connectToDb() {
