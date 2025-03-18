@@ -1,5 +1,10 @@
 import React from 'react';
 import * as ReactDOM from "react-dom/client";
-import IssueList from "./IssueList.jsx";
+import { HashRouter as Router } from 'react-router-dom';
+import NavPage from "./NavPage.jsx";
 
-ReactDOM.createRoot(document.getElementById('root')).render(<IssueList />);
+const element = <Router>
+    <NavPage></NavPage>
+</Router>;
+
+ReactDOM.createRoot(document.getElementById('root')).render(element);

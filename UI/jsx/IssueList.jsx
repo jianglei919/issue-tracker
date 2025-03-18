@@ -2,11 +2,17 @@ import React from 'react';
 import IssueAdd from "./IssueAdd.jsx";
 import IssueTable from "./IssueTable.jsx";
 import IssueFilter from "./IssueFilter.jsx";
+import { useLocation, useParams } from 'react-router-dom';
 
-export default class IssueList extends React.Component {
+function getParam(Il) {
+    return props => <Il {...props} myparam={useParams()} myloc={useLocation()}></Il>
+}
+
+class IssueList extends React.Component {
     constructor() {
         super();
         this.state = { issues: [] };
+        this.getFilter = this.getFilter.bind(this);
     }
 
     componentDidMount() {
@@ -25,13 +31,18 @@ export default class IssueList extends React.Component {
                             due
                         }
                     }`;
+        const myparamid = this.props.myparam.id;
         const response = await fetch('/graphql', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ query }),
+            body: JSON.stringify({ query, variables: {myparamid} }),
         });
         const result = await response.json();
-        console.log("loadData fetch from graphql: " + result);
+
+        // result.data.issueList.forEach(issue => {
+        //     issue === this.props.myparam.id;
+        // });
+        
         this.setState({ issues: result.data.issueList });
     }
  
@@ -53,14 +64,29 @@ export default class IssueList extends React.Component {
         this.loadData();
     }
 
+    getFilter() {
+        const myl = this.state.issues.slice();
+        if (typeof this.props.myparam.id !== 'undefined') {
+            const result = myl.filter(issue => issue.id == this.props.myparam.id);
+            return result;
+        }
+        if (typeof this.props.page !== 'undefined') {
+            return myl.sort((a, b) => a.id >= b.id?1:-1).slice((Number(this.props.page) * 10) - 10, (Number(this.props.page)));
+            // return myl.sort((a, b) => a.id - b.id).slice(0, this.props.myparam.page);
+        }
+        return myl;
+    }
+
     render() {
-        console.log("Rendering IssueList with issues:", this.state.issues);
+        const myList = this.getFilter();
         return (
             <>
                 <IssueFilter />
-                <IssueTable issues={this.state.issues || []} />
+                <IssueTable issues={myList} />
                 <IssueAdd insertIssue={this.insertIssue.bind(this)} />
             </>
         );
     }
 }
+
+export default getParam(IssueList);

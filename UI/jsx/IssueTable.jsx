@@ -1,8 +1,8 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 export default class IssueTable extends React.Component {
     render() {
-        console.log("Rendering IssueTable with issues:", this.props.issues); // 确保数据传入
         const rowStyle = { border: "1px solid black", padding: 5 };
         const { issues = [] } = this.props;
         const rows = issues.map((issue) => (
@@ -16,6 +16,7 @@ export default class IssueTable extends React.Component {
                         <th style={rowStyle}>Title</th>
                         <th style={rowStyle}>Owner</th>
                         <th style={rowStyle}>Status</th>
+                        <th style={rowStyle}>Opeation</th>
                     </tr>
                 </thead>
                 <tbody>{rows}</tbody>
@@ -33,6 +34,7 @@ class IssueRow extends React.Component {
                 <td style={rowStyle}>{issue.title}</td>
                 <td style={rowStyle}>{issue.owner}</td>
                 <td style={rowStyle}>{issue.status}</td>
+                <td style={rowStyle}><Link to={`/issues/${this.props.issue.id}`}>Edit</Link></td>
             </tr>
         );
     }
